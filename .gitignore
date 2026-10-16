@@ -1,0 +1,14 @@
+node_modules/
+*.log
+*preview.png
+*-screen.png
+card-test.png
+artifacts/
+app/.dart_tool/
+app/build/
+app/android/local.properties
+app/ios/Pods/
+app/ios/.symlinks/
+app/ios/Flutter/Generated.xcconfig
+app/ios/Flutter/flutter_export_environment.sh
+progress.md

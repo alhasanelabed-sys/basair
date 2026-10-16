@@ -1,0 +1,16 @@
+{
+  "name": "basair",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "test": "node tests/domain.test.cjs",
+    "build": "node tools/build.cjs",
+    "serve": "node tools/server.cjs",
+    "test:browser": "node tests/browser.cjs",
+    "test:build": "node tests/build.cjs",
+    "test:boundaries": "node tests/boundaries.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.56.1"
+  }
+}
