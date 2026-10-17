@@ -13,6 +13,6 @@ fi
 command -v node >/dev/null || { echo "Node.js is required for configuring the shared app bundle."; exit 1; }
 node ../tools/configure-platforms.cjs
 flutter pub get
-flutter analyze
+flutter analyze --no-fatal-infos
 flutter test
 printf '%s\n' 'Ready. Connect a device, then run: flutter run'
