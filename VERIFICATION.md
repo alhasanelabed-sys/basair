@@ -24,3 +24,12 @@ Corpus hash establishes identity with the imported mirror; it is not a substitut
 ## Android build — 2026-10-17
 
 GitHub Actions run 39037232200 (source commit 50cd4d71136091df9cbc32c0d7748b9f8fd14817) passed Flutter 3.35.7 package resolution, Dart analysis with nonfatal style infos, the four native snapshot tests, APK release compilation and apksigner verification. Downloaded artifact ZIP digest matched GitHub metadata; APK SHA256 matched its packaged checksum; bundled HTML matched the local shared source byte-for-byte. Flutter engine targets: armeabi-v7a and arm64-v8a. Signing uses the generated development key. Real-device installation, WebView/native bridge interaction, and iOS remain unverified.
+
+## Architecture-specific APKs and landing page
+
+Run 39038195458, source commit 7652fbd229bad70ad0ef5848a8daf985668556f8, built and signature-verified separate ARM64 and ARMv7 release APKs. Both artifact ZIP and APK checksums were verified after download; both bundled HTML files match the shared app source.
+
+- basair-0.1.0-arm64.apk: 16126345 bytes; SHA256 `81403d51187d044aec0e1ee1408dead25eb76d5a52010d71139362ddac6775ff`.
+- basair-0.1.0-armv7.apk: 13327463 bytes; SHA256 `430dcc18ba0004cc672bb3c3ec3f01a500652e738f727c917e94fa04814b0b59`.
+
+The owner-private landing page and APK downloads were deployed at https://basair-quran.dewy-pin-3498.chatgpt.site. Local Chromium QA verified desktop/mobile layout, live search, feature tabs, navigation, local download targets and embedded app search. Native installation and WebView interaction on a real phone remain unverified.

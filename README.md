@@ -29,6 +29,8 @@
 
 ## تنزيل أندرويد
 
+[صفحة بصائر والتنزيل المباشر — معاينة خاصة بالمالك](https://basair-quran.dewy-pin-3498.chatgpt.site)
+
 تجد ملفات APK التجريبية ضمن ناتج آخر تشغيل ناجح في [Android APK](https://github.com/alhasanelabed-sys/basair/actions/workflows/android-apk.yml). اختر `basair-android-apk` من قسم Artifacts، ثم استخرج الملف المناسب لهاتفك من ZIP. تنزيل Artifacts يتطلب تسجيل الدخول إلى GitHub، وتبقى الحزمة ٣٠ يومًا.
 
 الإصدار تجريبي؛ احتفظ بنسخة احتياطية من تأملاتك قبل إعادة التثبيت. المعاينة المتاحة في المستودع تبقى قابلة للتشغيل محليًا.
