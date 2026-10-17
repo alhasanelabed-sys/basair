@@ -1,0 +1,83 @@
+name: Android APK
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'app/**'
+      - 'preview/**'
+      - 'tools/**'
+      - '.github/workflows/android-apk.yml'
+permissions:
+  contents: read
+concurrency:
+  group: android-apk-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  android:
+    name: Build and verify test APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.35.7'
+          channel: stable
+          cache: true
+      - name: Verify Quran corpus and shared UI
+        run: |
+          npm test
+          npm run test:build
+          npm run build
+      - name: Generate Android platform without replacing app source
+        run: |
+          scratch_dir=$(mktemp -d)
+          flutter create --no-pub --platforms=android --org app.basair --project-name basair "$scratch_dir/basair"
+          if [ ! -d app/android ]; then cp -R "$scratch_dir/basair/android" app/android; fi
+          rm -rf "$scratch_dir"
+      - name: Set Android app name and icon
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('app/android/app/src/main/AndroidManifest.xml')
+          s=p.read_text().replace('android:label="basair"','android:label="بصائر"').replace('android:icon="@mipmap/ic_launcher"','android:icon="@drawable/ic_basair"')
+          p.write_text(s)
+          icon=Path('app/android/app/src/main/res/drawable/ic_basair.xml')
+          icon.parent.mkdir(parents=True,exist_ok=True)
+          icon.write_text('''<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="108dp" android:height="108dp" android:viewportWidth="192" android:viewportHeight="192"><path android:fillColor="#173F36" android:pathData="M0,0h192v192h-192z"/><path android:fillColor="#E5D1A1" android:pathData="M96,30L114,78L162,96L114,114L96,162L78,114L30,96L78,78Z"/><path android:fillColor="#173F36" android:pathData="M96,50L109,83L142,96L109,109L96,142L83,109L50,96L83,83Z"/></vector>''')
+          PY
+      - name: Resolve Flutter packages
+        working-directory: app
+        run: flutter pub get
+      - name: Analyze Dart source
+        working-directory: app
+        run: flutter analyze --no-fatal-infos
+      - name: Test native snapshot validation
+        working-directory: app
+        run: flutter test
+      - name: Build installable test APK
+        working-directory: app
+        run: flutter build apk --release --target-platform android-arm,android-arm64
+      - name: Verify APK signature and package artifact
+        run: |
+          mkdir -p artifacts
+          cp app/build/app/outputs/flutter-apk/app-release.apk artifacts/basair-0.1.0-test.apk
+          signer=$(find "$ANDROID_HOME/build-tools" -name apksigner | sort -V | tail -n 1)
+          "$signer" verify --verbose artifacts/basair-0.1.0-test.apk
+          cd artifacts
+          sha256sum basair-0.1.0-test.apk > SHA256SUMS.txt
+          printf '%s\n' 'Basair 0.1.0 test APK. Signed with the generated development key. Not a Play Store release. Source: https://github.com/alhasanelabed-sys/basair' > README.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: basair-android-apk
+          path: artifacts/
+          if-no-files-found: error
+          retention-days: 30
